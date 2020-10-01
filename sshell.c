@@ -15,18 +15,36 @@
  #define MAX_LINE 80
 
  //Stores arguments in args[]
- int main(int argc, char *args[]) {
+ int main() {
 
+    char *args[MAX_LINE];
+    char command[MAX_LINE];
+    char delim[] = " ";
+    int i = 0;
     *args[MAX_LINE/2 +1]; /* command line arguments */
     int should_run = 1; /* flag to determine when to exit the program */
     pid_t pid;
+    
+    printf("osh> ");
+    fgets(command, MAX_LINE, stdin);
+    char *ptr = strtok(command, delim);
+
+    while (ptr != NULL) {
+	    args[i] = ptr;
+	    ptr = strtok(NULL, delim);
+	    ++i;
+    }
+
+
+
+
+
 
     printf("Forking program . . . \n");
     pid = fork();
 
     while (should_run) {
        pid_t pid;
-       pid_t child_pid;
        printf ("osh>");
        fflush(stdout);
 
@@ -40,19 +58,20 @@
        else if (pid ==0) {
 	   printf(" I am the child ");
 	   execvp(args[0], args);
-	   should_run = -1;
+	   should_run = 0;
        }
 
 
        //This is the parent process
        else {
 	   printf("I am the parent");
-	   should_run = -1;
+	   should_run = -0;
        }
 
-       //Makes the parent wait
+       /*
        if (pid > 0) {
 	   int stat_val;
+	   pid_t child_pid;
 
 	   child_pid = wait(&stat_val);
 
@@ -64,6 +83,7 @@
 	   printf("Parent has finished \n");
 	   should_run= -1;
        }
+       */
 
 	  
        /**
@@ -76,6 +96,6 @@
     sleep(1);
     }
     printf("ending");
-    should_run = -1;
+    should_run = 0;
     return 0;
  }
